@@ -409,9 +409,14 @@ const server = http.createServer(async (req, res) => {
 
   // Submissão do paciente
   if (url === '/submit' && req.method === 'POST') {
+    console.log('[SUBMIT] Recebendo resposta...');
     const body = await parseBody(req);
+    console.log('[SUBMIT] Nome:', body.nome);
+    console.log('[SUBMIT] Respostas recebidas:', body.answers ? body.answers.length : 'NENHUMA');
     if (!body.answers || body.answers.length !== 45) {
-      res.writeHead(400); return res.end('Dados inválidos');
+      console.log('[SUBMIT] ERRO: dados inválidos');
+      res.writeHead(400, {'Access-Control-Allow-Origin':'*'});
+      return res.end('Dados inválidos');
     }
     const registro = {
       id: Date.now(),
@@ -420,8 +425,15 @@ const server = http.createServer(async (req, res) => {
       answers: body.answers
     };
     salvarResposta(registro);
-    res.writeHead(200, {'Content-Type':'application/json'});
+    console.log('[SUBMIT] ✅ Resposta salva com sucesso! Total:', lerRespostas().length);
+    res.writeHead(200, {'Content-Type':'application/json','Access-Control-Allow-Origin':'*'});
     return res.end(JSON.stringify({ok:true}));
+  }
+
+  // CORS preflight
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204, {'Access-Control-Allow-Origin':'*','Access-Control-Allow-Methods':'POST,GET','Access-Control-Allow-Headers':'Content-Type'});
+    return res.end();
   }
 
   // Login GET
