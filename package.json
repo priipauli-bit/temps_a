@@ -1,0 +1,12 @@
+{
+  "name": "temps-a",
+  "version": "1.0.0",
+  "description": "Formulário TEMPS-A online com painel do médico",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=16"
+  }
+}
